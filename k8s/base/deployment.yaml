@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: execution-service
+  labels:
+    app: execution-service
+    component: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: execution-service
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: execution-service
+        component: backend
+    spec:
+      serviceAccountName: execution-service
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        fsGroup: 1001
+      containers:
+        - name: execution-service
+          image: execution-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3002
+              name: http
+              protocol: TCP
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3002"
+            - name: AWS_REGION
+              value: "us-east-1"
+            - name: MONGODB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: execution-service-secrets
+                  key: MONGODB_URI
+            - name: EVENT_BUS_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: execution-service-config
+                  key: EVENT_BUS_NAME
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 1001
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
