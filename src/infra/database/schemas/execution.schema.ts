@@ -65,6 +65,9 @@ export class ExecutionDocument extends Document {
 
   @Prop()
   notes?: string
+
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export const ExecutionSchema = SchemaFactory.createForClass(ExecutionDocument)

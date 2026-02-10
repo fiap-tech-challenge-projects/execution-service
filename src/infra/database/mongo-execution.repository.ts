@@ -172,8 +172,8 @@ export class MongoExecutionRepository implements IExecutionRepository {
       document.actualDuration,
       tasks,
       document.notes,
-      document.createdAt,
-      document.updatedAt,
+      document.createdAt || new Date(),
+      document.updatedAt || new Date(),
     )
   }
 }
