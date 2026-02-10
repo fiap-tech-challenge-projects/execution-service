@@ -41,3 +41,11 @@ lerna-debug.log*
 
 # Claude Code guidance file
 CLAUDE.md
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
+*.tfvars.json
