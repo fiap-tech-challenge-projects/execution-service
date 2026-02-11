@@ -20,10 +20,11 @@ configMapGenerator:
     behavior: merge
     literals:
       - EVENT_BUS_NAME=fiap-tech-challenge-event-bus
+      - DYNAMODB_TABLE_NAME=fiap-tech-challenge-executions-development
 
 images:
   - name: execution-service
-    newName: execution-service
+    newName: 305032652600.dkr.ecr.us-east-1.amazonaws.com/execution-service
     newTag: dev-latest
 
 patches:

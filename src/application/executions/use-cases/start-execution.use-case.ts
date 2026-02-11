@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { IExecutionRepository } from '@domain/executions/repositories'
 import { IEventPublisher } from '@application/events/interfaces/event-publisher.interface'
 import { ExecutionResponseDto } from '../dtos'
@@ -10,7 +10,9 @@ import { ExecutionMapper } from '../mappers/execution.mapper'
 @Injectable()
 export class StartExecutionUseCase {
   constructor(
+    @Inject('IExecutionRepository')
     private readonly executionRepository: IExecutionRepository,
+    @Inject('IEventPublisher')
     private readonly eventPublisher: IEventPublisher,
   ) {}
 

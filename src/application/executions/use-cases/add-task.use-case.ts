@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { IExecutionRepository } from '@domain/executions/repositories'
 import { ExecutionTask } from '@domain/executions/entities'
 import { AddTaskDto, ExecutionResponseDto } from '../dtos'
@@ -6,7 +6,10 @@ import { ExecutionMapper } from '../mappers/execution.mapper'
 
 @Injectable()
 export class AddTaskUseCase {
-  constructor(private readonly executionRepository: IExecutionRepository) {}
+  constructor(
+    @Inject('IExecutionRepository')
+    private readonly executionRepository: IExecutionRepository
+  ) {}
 
   async execute(dto: AddTaskDto): Promise<ExecutionResponseDto> {
     const execution = await this.executionRepository.findById(dto.executionId)
