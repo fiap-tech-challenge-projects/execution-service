@@ -21,6 +21,7 @@ import {
   StartExecutionUseCase,
   CompleteExecutionUseCase,
   GetExecutionUseCase,
+  ListExecutionsUseCase,
   AddTaskUseCase,
 } from '@application/executions/use-cases'
 import {
@@ -38,6 +39,7 @@ export class ExecutionsController {
     private readonly startExecutionUseCase: StartExecutionUseCase,
     private readonly completeExecutionUseCase: CompleteExecutionUseCase,
     private readonly getExecutionUseCase: GetExecutionUseCase,
+    private readonly listExecutionsUseCase: ListExecutionsUseCase,
     private readonly addTaskUseCase: AddTaskUseCase,
   ) {}
 
@@ -53,6 +55,44 @@ export class ExecutionsController {
     @Body() createExecutionDto: CreateExecutionDto,
   ): Promise<ExecutionResponseDto> {
     return this.createExecutionUseCase.execute(createExecutionDto)
+  }
+
+  @Get()
+  @ApiOperation({ summary: 'List executions with filters' })
+  @ApiQuery({
+    name: 'serviceOrderId',
+    required: false,
+    description: 'Filter by service order ID',
+  })
+  @ApiQuery({
+    name: 'budgetId',
+    required: false,
+    description: 'Filter by budget ID',
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    enum: ExecutionStatus,
+    description: 'Filter by status',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'List of executions',
+  })
+  async findAll(
+    @Query('serviceOrderId') serviceOrderId?: string,
+    @Query('budgetId') budgetId?: string,
+    @Query('status') status?: ExecutionStatus,
+    @Query('limit') limit?: number,
+    @Query('offset') offset?: number,
+  ): Promise<{ executions: ExecutionResponseDto[]; total: number }> {
+    return this.listExecutionsUseCase.execute({
+      serviceOrderId,
+      budgetId,
+      status,
+      limit,
+      offset,
+    })
   }
 
   @Get(':id')

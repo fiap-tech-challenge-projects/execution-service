@@ -5,3 +5,4 @@ metadata:
 data:
   EVENT_BUS_NAME: ""  # Will be set by overlay
   DYNAMODB_TABLE_NAME: ""  # Will be set by overlay
+  SQS_QUEUE_URL: ""  # Will be set by overlay

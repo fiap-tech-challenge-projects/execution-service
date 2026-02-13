@@ -34,6 +34,10 @@ spec:
             - containerPort: 3002
               name: http
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: execution-service-aws-creds
+                optional: true
           env:
             - name: NODE_ENV
               value: "production"
@@ -51,6 +55,11 @@ spec:
                 configMapKeyRef:
                   name: execution-service-config
                   key: EVENT_BUS_NAME
+            - name: SQS_QUEUE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: execution-service-config
+                  key: SQS_QUEUE_URL
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
                 secretKeyRef:
