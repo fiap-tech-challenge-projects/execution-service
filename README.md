@@ -199,7 +199,6 @@ Same pattern as other services:
 
 - [billing-service](../billing-service) - Billing Management (publishes PaymentCompleted)
 - [os-service](../os-service) - Service Order Management
-- [saga-orchestrator-service](../saga-orchestrator-service) - Saga Orchestration
 
 ## License
 

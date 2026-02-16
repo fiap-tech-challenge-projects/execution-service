@@ -34,6 +34,10 @@ spec:
             - containerPort: 3002
               name: http
               protocol: TCP
+          envFrom:
+            - secretRef:
+                name: execution-service-aws-creds
+                optional: true
           env:
             - name: NODE_ENV
               value: "production"
@@ -41,16 +45,39 @@ spec:
               value: "3002"
             - name: AWS_REGION
               value: "us-east-1"
-            - name: MONGODB_URI
+            - name: DYNAMODB_TABLE_NAME
               valueFrom:
-                secretKeyRef:
-                  name: execution-service-secrets
-                  key: MONGODB_URI
+                configMapKeyRef:
+                  name: execution-service-config
+                  key: DYNAMODB_TABLE_NAME
             - name: EVENT_BUS_NAME
               valueFrom:
                 configMapKeyRef:
                   name: execution-service-config
                   key: EVENT_BUS_NAME
+            - name: SQS_QUEUE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: execution-service-config
+                  key: SQS_QUEUE_URL
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: execution-service-aws-creds
+                  key: AWS_ACCESS_KEY_ID
+                  optional: true
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: execution-service-aws-creds
+                  key: AWS_SECRET_ACCESS_KEY
+                  optional: true
+            - name: AWS_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: execution-service-aws-creds
+                  key: AWS_SESSION_TOKEN
+                  optional: true
           resources:
             requests:
               cpu: 250m

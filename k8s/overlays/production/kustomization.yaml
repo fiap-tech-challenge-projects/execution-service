@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: ftc-app
+namespace: ftc-app-production
 
 bases:
   - ../../base
@@ -15,7 +15,9 @@ configMapGenerator:
   - name: execution-service-config
     behavior: merge
     literals:
-      - EVENT_BUS_NAME=fiap-tech-challenge-event-bus
+      - EVENT_BUS_NAME=fiap-tech-challenge-events-production
+      - DYNAMODB_TABLE_NAME=fiap-tech-challenge-executions-production
+      - SQS_QUEUE_URL=https://sqs.us-east-1.amazonaws.com/305032652600/execution-service-events-production
 
 images:
   - name: execution-service
@@ -29,4 +31,4 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/annotations/eks.amazonaws.com~1role-arn
-        value: arn:aws:iam::118735037876:role/fiap-execution-service-prod
+        value: arn:aws:iam::305032652600:role/fiap-execution-service-prod
